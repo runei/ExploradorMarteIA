@@ -4,8 +4,6 @@
 #include <random>
 #include <functional>
 #include <memory>
-#include <thread>
-#include <chrono>
 #include <algorithm>
 
 #define ROW_SIZE 10
@@ -47,6 +45,7 @@ struct Pos {
 #ifdef _WIN32
 
 #include <windows.h>
+#include <time.h>
 
 void cls()
 {
@@ -87,12 +86,23 @@ void cls()
 
 #else
 
+#include <unistd.h>
+
 void cls()
 {
 	std::cout << "\x1B[2J\x1B[H";
 }
 
 #endif 
+
+void mySleep(int sleepMs)
+{
+#ifdef _WIN32
+    Sleep(sleepMs);
+#else
+    usleep(sleepMs * 1000);   // usleep takes sleep time in us (1 millionth of a second)
+#endif
+}
 
 /*=========================================================================================*/
 
@@ -334,7 +344,7 @@ int main()
 		planet.print();
 
 		planet.run();
-		std::this_thread::sleep_for (std::chrono::milliseconds(200));
+		mySleep(200);
 	} while (true);
 
 	// cls();
